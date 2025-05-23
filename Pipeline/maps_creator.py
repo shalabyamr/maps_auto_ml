@@ -43,7 +43,7 @@ def create_maps(dfs_obj, configs_obj):
                     toronto_map)
             # End of Feature Groups ##
             folium.plugins.LocateControl(auto_start=False).add_to(toronto_map)
-            folium.LayerControl().add_to(toronto_map)
+            folium.LayerControl(collapsed=False, draggable=True).add_to(toronto_map)
             # Start of Populating the Map ##
 
             mc = f_MarkerCluster()
