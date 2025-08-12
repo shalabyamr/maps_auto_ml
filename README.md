@@ -195,7 +195,7 @@ The parsed configurations from [Config.ini](Pipeline/config.ini) is stored in a 
 
 
 ### §1. Monthly Data Web Scraping
-To download the Ontario monthly air quality data from https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/, function _extract_monthly_data()_in the Data Extractor [data_extractor.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_extractor.py) File.
+To download the Ontario monthly air quality data from https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/, function _extract_monthly_data()_in the Data Extractor [data_extractor.py](Pipeline/data_extractor.py) File.
 which ingests the public data into the **first** staging table "**stg_monthly_air_data**."
 
 | Column         | Data Type        |
@@ -250,7 +250,7 @@ which ingests the public data into the **first** staging table "**stg_monthly_ai
 
 
 ### §2. Monthly Forecasts Data Web Scraping
-To download the Ontario monthly air quality data from https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/model/csv/, the function _extract_monthly_forecasts()_ in the Data Extractor [data_extractor.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_extractor.py) File.
+To download the Ontario monthly air quality data from https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/model/csv/, the function _extract_monthly_forecasts()_ in the Data Extractor [data_extractor.py](Pipeline/data_extractor.py) File.
 which ingests the public data into the **third** staging table "**stg_monthly_forecasts**" with the option to locally appending all the individual CSV files into one file with a prefix **'FORECAST_'** to differentiate it from the actual monthly data.
 
 
@@ -269,8 +269,8 @@ which ingests the public data into the **third** staging table "**stg_monthly_fo
 
 
 ### §3. Traffic Volume
-Using the REST API provided for Toronto Traffic Volume https://open.toronto.ca/dataset/traffic-volumes-at-intersections-for-all-modes/, the function _extract_traffic_volume()_ in the [data_extractor.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_extractor.py) File.
-which ingests the traffic volume data into the **fourth** staging table "**stg_traffic_volume**" with the option to locally save the CSV file to _['./Data/traffic_volume.csv'](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Data/traffic_volume.csv).
+Using the REST API provided for Toronto Traffic Volume https://open.toronto.ca/dataset/traffic-volumes-at-intersections-for-all-modes/, the function _extract_traffic_volume()_ in the [data_extractor.py](Pipeline/data_extractor.py) File.
+which ingests the traffic volume data into the **fourth** staging table "**stg_traffic_volume**" with the option to locally save the CSV file to _['./Data/traffic_volume.csv'](https://drive.google.com/file/d/1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9/view?usp=sharing).
 
 |      Column       |    Data Type     |
 |:-----------------:|:----------------:|
@@ -288,7 +288,7 @@ which ingests the traffic volume data into the **fourth** staging table "**stg_t
 |   last_updated    |    timestamp     |
 
 ### §4. Geographical Names Data
-Downloads and extracts the zip file of the Geographical Names Data from https://natural-resources.canada.ca/earth-sciences/geography/download-geographical-names-data/9245, the function _extract_geo_names()_ in the [data_extractor.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_extractor.py).
+Downloads and extracts the zip file of the Geographical Names Data from https://natural-resources.canada.ca/earth-sciences/geography/download-geographical-names-data/9245, the function _extract_geo_names()_ in the [data_extractor.py](Pipeline/data_extractor.py).
 which ingests the geographical names data containing the coordinates of the air quality stations into the **fifth** staging table "**stg_geo_names**" with the option to retain the extracted CSV file to _'./Data/cgn_canada_csv_eng.csv'_.
 
 |        Column        |    Data Type     |
@@ -313,7 +313,7 @@ which ingests the geographical names data containing the coordinates of the air 
 |     src_filename     |       text       |
 
 ### §5. ArcGIS Toronto and Peel Traffic Count
-Downloads Toronto and Peel Traffic Count from https://www.arcgis.com/home/item.html?id=4964801ff5de475a80c51c5d54a9c8da, the function _extract_geo_names()_ in the [data_extractor.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_extractor.py).
+Downloads Toronto and Peel Traffic Count from https://www.arcgis.com/home/item.html?id=4964801ff5de475a80c51c5d54a9c8da, the function _extract_geo_names()_ in the [data_extractor.py](Pipeline/data_extractor.py).
 which ingests the Toronto and Peel Traffic Counts with latitude and longitude provided by ArcGIS  into the **sixth** staging table "**load_gta_traffic_arcgis**" with the option to create CSV file to _'./Data/ArcGIS_Toronto_and_Peel_Traffic.csv'_.
 
 |         Column         |    Data Type     |
@@ -340,7 +340,7 @@ which ingests the Toronto and Peel Traffic Counts with latitude and longitude pr
 ## 2. Transformation Layer
 ### §1. Monthly Air Data Transpose
 The staging table _stg_monthly_air_data_transpose_ created from transposing the Ontario monthly air quality (https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/) to be ingested and converted 
-into the **second** production table "**FACT_MONTHLY_AIR_DATA_TRANSPOSE** in _**"PUBLIC"**_ Schema via the execution of [data_transformer.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_transformer.py) with the following two conditions:
+into the **second** production table "**FACT_MONTHLY_AIR_DATA_TRANSPOSE** in _**"PUBLIC"**_ Schema via the execution of [data_transformer.py](Pipeline/data_transformer.py) with the following two conditions:
 
 * Added column "_last_inserted_" converted from UTC to EST to capture the time of insertion into production schema
 * The condition _ROW_NUMBER() OVER(PARTITION BY "the_date","hours_utc" ORDER BY hours_utc DESC) = 1_to eliminate duplicate records within any given date.
@@ -418,7 +418,7 @@ The staging table _stg_monthly_air_data_ created from the Ontario monthly air qu
 
 
 ### §2. Monthly Forecasts
-The staging table _stg_monthly_forecasts_ acquired from the Ontario monthly air quality data(https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/model/csv/) is ingested into the production table _fact_monthly_forecasts_ in _PUBLIC_ schema by [data_loader.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_loader.py) with the following two conditions:
+The staging table _stg_monthly_forecasts_ acquired from the Ontario monthly air quality data(https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/model/csv/) is ingested into the production table _fact_monthly_forecasts_ in _PUBLIC_ schema by [data_loader.py](Pipeline/data_loader.py) with the following two conditions:
 
 * Added column "_last_inserted_" converted from UTC to EST to capture the time of insertion into production schema
 * The condition _ROW_NUMBER() OVER(PARTITION BY "cgndb_code", "validity_date" ORDER BY validity_time_utc DESC)=1_ to eliminate the duplicated records within the provided dates.
@@ -439,7 +439,7 @@ The staging table _stg_monthly_forecasts_ acquired from the Ontario monthly air 
 |   last_inserted   | timestamp |
 
 ### §3. Traffic Volume
-The staging table _stg_traffic_volume_ constructed from the REST API provided for Toronto Traffic Volume https://open.toronto.ca/dataset/traffic-volumes-at-intersections-for-all-modes/, is ingested into production _Public_ Schema as _FACT_TRAFFIC_VOLUME_ by [data_loader.py](https://github.com/amr-y-shalaby/GGR473_Project/blob/main/Pipeline/data_loader.py) with the following two conditions:
+The staging table _stg_traffic_volume_ constructed from the REST API provided for Toronto Traffic Volume https://open.toronto.ca/dataset/traffic-volumes-at-intersections-for-all-modes/, is ingested into production _Public_ Schema as _FACT_TRAFFIC_VOLUME_ by [data_loader.py](Pipeline/data_loader.py) with the following two conditions:
 
 * Added column "_last_inserted_" converted from UTC to EST to capture the time of insertion into production schema
 * The condition _ROW_NUMBER() OVER(PARTITION BY location_id ORDER BY latest_count_date DESC)=1_ to eliminate the duplicated records within the provided dates.
