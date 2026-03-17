@@ -11,7 +11,7 @@ import sys
 from rpy2 import robjects as ro
 from bs4 import BeautifulSoup
 import rpy2.robjects.packages as rpackages
-from google_drive_downloader import GoogleDriveDownloader as gdd
+from googledrivedownloader import download_file_from_google_drive as gdd
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -249,7 +249,9 @@ def extract_monthly_data(sqlalchemy_engine):
 def extract_monthly_forecasts(configs_obj):
     a = datetime.datetime.now()
     print('Loading Monthly Forecasts as of: {}'.format(a))
-    # URL from which pdfs to be downloaded
+    ### WARNING                  !!!!!            ###
+    ### URL was removed by Environment Canada      ###
+    ### NEEDS TO BE UPDATED      !!!!!!           ###
     url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/monthly/csv/"
 
     # Requests URL and get response object
@@ -379,8 +381,8 @@ def extract_gta_traffic_arcgis(configs_obj):
     a = datetime.datetime.now()
     print('Loading ArcGIS Traffic from ArcGIS as of: ', a)
     filename = configs_obj.run_conditions['parent_dir'] + '/Data/' + 'ArcGIS_Toronto_and_Peel_Traffic.txt'
-    download_link = 'https://drive.google.com/file/d/1hKbdt9d92B_U-tPGkjnbJlb88L59YS3a/view?usp=drive_link'
-    gdd.download_file_from_google_drive(file_id='1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9',
+    download_link = 'https://drive.google.com/file/d/1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9/view?usp=drive_link'
+    gdd(file_id='1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9',
                                         dest_path=filename,
                                         unzip=False, showsize=True, overwrite=True)
     df = pd.read_csv(filename, sep=',', parse_dates=True)
