@@ -191,8 +191,6 @@ def extract_monthly_data(sqlalchemy_engine):
     a = datetime.datetime.now()
     # URL from which pdfs to be downloaded
     print(f"Started Downloading Monthly Data as of {a}")
-    ## Environment Canada changed the link
-    #url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/"
     url = "https://dd.weather.gc.ca/today/air_quality/aqhi/ont/observation/monthly/csv/"
     # Requests URL and get response object
     response = requests.get(url)
@@ -248,10 +246,6 @@ def extract_monthly_data(sqlalchemy_engine):
 def extract_monthly_forecasts(configs_obj):
     a = datetime.datetime.now()
     print('Loading Monthly Forecasts as of: {}'.format(a))
-    ### WARNING                  !!!!!            ###
-    ### URL was removed by Environment Canada      ###
-    ### NEEDS TO BE UPDATED      !!!!!!           ###
-    #url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/monthly/csv/"
     url = "https://dd.weather.gc.ca/today/air_quality/aqhi/ont/forecast/monthly/csv/"
 
     # Requests URL and get response object
