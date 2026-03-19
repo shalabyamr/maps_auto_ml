@@ -191,8 +191,9 @@ def extract_monthly_data(sqlalchemy_engine):
     a = datetime.datetime.now()
     # URL from which pdfs to be downloaded
     print(f"Started Downloading Monthly Data as of {a}")
-    url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/"
-
+    ## Environment Canada changed the link
+    #url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/observation/monthly/csv/"
+    url = "https://dd.weather.gc.ca/today/air_quality/aqhi/ont/observation/monthly/csv/"
     # Requests URL and get response object
     response = requests.get(url)
 
@@ -205,9 +206,8 @@ def extract_monthly_data(sqlalchemy_engine):
     i = 0
     # From all links check for CSV link and
     # if present download file
-
     for link in links:
-        if ('.csv' in link.get('href', [])):
+        if (('.csv' in link.get('href', [])) and ('BACKFILLED' not in link.get('href', []))):
             download_link = url + link.get('href')
             print('Download Link: ', download_link)
             filename = configs_obj.run_conditions['parent_dir'] + '/Data/' + link.get('href')
@@ -215,7 +215,6 @@ def extract_monthly_data(sqlalchemy_engine):
                 print("Filename to be Written: ", filename)
             i += 1
             # Get response object for link
-            response = requests.get(download_link)
             df = pd.read_csv(download_link)
             df['Date'] = pd.to_datetime(df['Date']).dt.date
             df.rename(columns={'Date': 'the_date', 'Hour (UTC)': 'hours_utc'}, inplace=True)
@@ -252,7 +251,8 @@ def extract_monthly_forecasts(configs_obj):
     ### WARNING                  !!!!!            ###
     ### URL was removed by Environment Canada      ###
     ### NEEDS TO BE UPDATED      !!!!!!           ###
-    url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/monthly/csv/"
+    #url = "https://dd.weather.gc.ca/air_quality/aqhi/ont/forecast/monthly/csv/"
+    url = "https://dd.weather.gc.ca/today/air_quality/aqhi/ont/forecast/monthly/csv/"
 
     # Requests URL and get response object
     response = requests.get(url)
@@ -331,6 +331,9 @@ def extract_traffic_volume(configs_obj):
     df['last_updated'] = datetime.datetime.now()
     df['download_link'] = download_link
     df['src_filename'] = filename
+    df['latest_count_date'] = pd.to_datetime(df['latest_count_date'])
+    df['latest_count_date'] = df['latest_count_date'].dt.date
+    df.rename(columns={'latest_count_date':'count_date'}, inplace=True)
     df.to_sql(name='stg_traffic_volume', con=configs_obj.database['sqlalchemy_engine'], if_exists='replace', schema='stage',
               index_label=False, index=False)
     if not configs_obj.run_conditions['save_locally']:

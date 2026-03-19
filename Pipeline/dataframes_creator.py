@@ -47,7 +47,7 @@ def create_dataframes(configs_obj):
             exec(pd_exec_statement, globals())
             exec(f"df_{public_table}.dropna(inplace=True)", globals())
             if 'fact_traffic_volume' == public_table:
-                df_fact_traffic_volume['latest_count_date'] = pd.to_datetime(df_fact_traffic_volume['latest_count_date'])
+                df_fact_traffic_volume['count_date'] = pd.to_datetime(df_fact_traffic_volume['count_date'])
             exec(f"h_df_{public_table} = h2o.h2o.H2OFrame(df_{public_table})", globals())
             exec(f"dfs_obj.h2o_dfs['{public_table}'] = h_df_{public_table}", globals())
             exec(f"dfs_obj.pandas_dfs['{public_table}'] = df_{public_table}", globals())
@@ -140,7 +140,7 @@ def auto_ml(dfs_obj):
         df_preds['future_date'] = pd.to_datetime(df_preds['count_date'], unit='ms').dt.date
         df_preds['predicted_traffic'] = df_preds['predicted_traffic'].apply(lambda x: int(round(x,0)))
         df_preds = df_preds[['objectid', 'tcs__' , 'main', 'latitude', 'longitude', 'future_date', 'predicted_traffic']]
-        df_traffic_forecasts = df_traffic_forecasts._append(df_preds)
+        df_traffic_forecasts = pd.concat([df_traffic_forecasts, df_preds], ignore_index=True)
 
     df_traffic_forecasts['last_inserted'] = datetime.datetime.now()
     dfs_obj.forecasts_dict['traffic_forecast'] = df_traffic_forecasts
@@ -195,7 +195,7 @@ def auto_ml(dfs_obj):
         df_preds['future_date'] = pd.to_datetime(df_preds['count_date'], unit='ms').dt.date
         df_preds['predicted_pedestrians'] = df_preds['predicted_pedestrians'].apply(lambda x: int(round(x,0)))
         df_preds = df_preds[['objectid', 'tcs__' , 'main', 'latitude', 'longitude', 'future_date', 'predicted_pedestrians']]
-        df_pedestrians_forecasts = df_pedestrians_forecasts._append(df_preds)
+        df_pedestrians_forecasts = pd.concat([df_pedestrians_forecasts, df_preds], ignore_index=True)
 
     df_pedestrians_forecasts['last_inserted'] = datetime.datetime.now()
     dfs_obj.forecasts_dict['pedestrians_forecast'] = df_pedestrians_forecasts
