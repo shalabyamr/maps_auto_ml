@@ -379,7 +379,7 @@ def extract_gta_traffic_arcgis(configs_obj):
     print('Loading ArcGIS Traffic from ArcGIS as of: ', a)
     filename = configs_obj.run_conditions['parent_dir'] + '/Data/' + 'ArcGIS_Toronto_and_Peel_Traffic.txt'
     download_link = 'https://drive.google.com/file/d/1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9/view?usp=drive_link'
-    gdd(file_id='1knjCNxRDIXqqF1gq9TB0yjBNP75BFQK9',
+    gdd(file_id='1d0QXSE5_ATVXn87KF8rSeY1z18JFEvc3',
                                         dest_path=filename,
                                         unzip=False, showsize=True, overwrite=True)
     df = pd.read_csv(filename, sep=',', parse_dates=True)
